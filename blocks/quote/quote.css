@@ -19,7 +19,7 @@
 }
 
 .block.quote > div:last-child > div::after {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     left: 0;
@@ -48,7 +48,7 @@
 }
 
 .block.quote > div:last-child > div::after {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     left: 0;
