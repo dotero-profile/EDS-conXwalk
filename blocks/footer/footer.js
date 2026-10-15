@@ -15,7 +15,6 @@ export default async function decorate(block) {
   block.textContent = '';
   const footer = document.createElement('div');
   while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
-  footer = footer.append('hola mundo');
 
-  block.append(footer);
+  block.append(footer+'gola munfo');
 }
