@@ -47,7 +47,7 @@ export default async function decorate(block) {
         try {
           await navigator.clipboard.writeText(pageURL.href);
           status.textContent = 'Enlace copiado';
-      } catch {
+        } catch {
           status.textContent = 'No se pudo copiar el enlace';
         }
       });
