@@ -1,26 +1,255 @@
-footer {
-  background-color: var(--light-color);
-  font-size: var(--body-font-size-xs);
+/* The layout rules are grouped by footer row; specificity order follows that structure. */
+/* stylelint-disable no-descending-specificity */
+.footer {
+  --footer-blue: #004b93;
+  --footer-border: #cdcdcd;
+
+  background: #fff;
+  color: #333;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-footer .footer > div {
-  margin: auto;
-  max-width: 1200px;
-  padding: 40px 24px 24px;
+.footer > div {
+  margin: 0 auto;
+  max-width: 1280px;
 }
 
-footer .footer p {
+.footer p {
   margin: 0;
 }
 
-.footer .footer-copy-status {
-  display: block;
-  margin-top: 8px;
-  font-size: 0.875em;
+/* Top brand row: blog logo, blue claim and Mutua Madrileña logo. */
+.footer .columns-3-cols {
+  margin: 50px auto;
 }
 
-@media (width >= 900px) {
-  footer .footer > div {
-    padding: 40px 32px 24px;
+.footer .columns-3-cols > div {
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 2fr) 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.footer .columns-3-cols > div > div {
+  min-width: 0;
+}
+
+.footer .columns-3-cols .columns-img-col:first-child img {
+  width: 78px;
+}
+
+.footer .columns-3-cols .columns-img-col:last-child img {
+  width: 193px;
+}
+
+.footer .columns-3-cols .footer-claim {
+  color: var(--footer-blue);
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Breadcrumb band. */
+.footer .footer-breadcrumb {
+  border-top: 1px solid var(--footer-border);
+  border-bottom: 1px solid var(--footer-border);
+  padding: 25px 0;
+}
+
+.footer .footer-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Link groups and vertical social toolbar. */
+.footer .columns-4-cols {
+  position: relative;
+  margin: 40px auto;
+}
+
+.footer .columns-4-cols > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 58px;
+  gap: 30px;
+  padding-right: 100px;
+}
+
+.footer .columns-4-cols > div > div {
+  min-width: 0;
+}
+
+.footer .columns-4-cols ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.footer .columns-4-cols > div > div:not(.footer-social) > ul > li {
+  font-weight: 600;
+}
+
+.footer .columns-4-cols ul ul {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.footer .columns-4-cols ul ul li {
+  font-weight: 400;
+}
+
+.footer .columns-4-cols a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer .columns-4-cols a:hover,
+.footer .columns-2-cols a:hover,
+.footer .footer-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.footer .footer-social {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.footer .footer-social p {
+  margin: 0;
+}
+
+.footer .footer-social a {
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 1px solid var(--footer-blue);
+  background: #fff;
+}
+
+.footer .footer-social p + p a {
+  border-top: 0;
+}
+
+.footer .footer-social img {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.footer .footer-copy-status {
+  position: absolute;
+  right: 0;
+  margin-top: 8px;
+  color: var(--footer-blue);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Legal links and copyright. */
+.footer .columns-2-cols {
+  border-top: 1px solid var(--footer-border);
+  padding: 20px 0 0;
+}
+
+.footer .columns-2-cols > div {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.footer .columns-2-cols a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.footer > div > .default-content-wrapper:last-child {
+  padding: 0 0 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+@media (width <= 1024px) {
+  .footer > div {
+    padding-right: 24px;
+    padding-left: 24px;
+  }
+
+  .footer .columns-4-cols > div {
+    padding-right: 76px;
+  }
+}
+
+@media (width <= 767px) {
+  .footer .columns-3-cols {
+    margin: 24px auto;
+  }
+
+  .footer .columns-3-cols > div {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .footer .columns-3-cols .footer-claim {
+    display: none;
+  }
+
+  .footer .columns-3-cols .columns-img-col:last-child {
+    justify-self: end;
+  }
+
+  .footer .footer-breadcrumb {
+    padding: 16px 0;
+  }
+
+  .footer .columns-4-cols {
+    margin: 0 auto;
+  }
+
+  .footer .columns-4-cols > div {
+    display: block;
+    padding: 0;
+  }
+
+  .footer .columns-4-cols > div > div:not(.footer-social) {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--footer-border);
+  }
+
+  .footer .columns-4-cols ul ul {
+    gap: 8px;
+  }
+
+  .footer .footer-social {
+    position: static;
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+  }
+
+  .footer .footer-social p + p a {
+    border-top: 1px solid var(--footer-blue);
+    border-left: 0;
+  }
+
+  .footer .footer-copy-status {
+    right: 50%;
+    transform: translateX(50%);
+  }
+
+  .footer .columns-2-cols {
+    padding-top: 20px;
+  }
+
+  .footer .columns-2-cols > div {
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+
+  .footer > div > .default-content-wrapper:last-child {
+    padding: 20px 0;
   }
 }

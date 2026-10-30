@@ -1,38 +1,88 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { loadFragment } from '../fragment/fragment.js';
 
-/**
- * loads and decorates the footer
- * @param {Element} block The footer block element
- */
-export default async function decorate(block) {
-  // Load the authored footer fragment.
-  const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
-  const fragment = await loadFragment(footerPath);
+const socialLinks = [
+  {
+    name: 'Facebook',
+    icon: 'footer-facebook.svg',
+    host: 'facebook.com',
+    path: '/sharer/sharer.php',
+    parameter: 'u',
+  },
+  {
+    name: 'LinkedIn',
+    icon: 'footer-linkedin.svg',
+    host: 'linkedin.com',
+    path: '/sharing/share-offsite/',
+    parameter: 'url',
+  },
+  {
+    name: 'X',
+    icon: 'footer-x.svg',
+    host: 'twitter.com',
+    path: '/intent/tweet',
+    parameter: 'url',
+  },
+  {
+    name: 'Copiar enlace',
+    icon: 'footer-copy-link.svg',
+    copy: true,
+  },
+];
 
-  if (!fragment) return;
+function codePath(path) {
+  return `${window.hlx.codeBasePath || ''}${path}`;
+}
 
-  // Keep the fragment content inside the footer block.
-  block.textContent = '';
-  const footer = document.createElement('div');
-  while (fragment.firstElementChild) footer.append(fragment.firstElementChild);
-  block.append(footer);
+function configureLogos(block) {
+  const logos = block.querySelector('.columns-3-cols');
+  if (!logos) return;
 
-  // Social buttons should link to the share endpoint; this adds the current page URL.
-  const pageURL = new URL(window.location.href);
-  pageURL.hash = '';
-  const shareEndpoints = [
-    { host: 'facebook.com', path: '/sharer/sharer.php', parameter: 'u' },
-    { host: 'linkedin.com', path: '/sharing/share-offsite/', parameter: 'url' },
-    { host: 'twitter.com', path: '/intent/tweet', parameter: 'url' },
-    { host: 'x.com', path: '/intent/post', parameter: 'url' },
-  ];
+  const [blogLogo, , companyLogo] = logos.querySelectorAll('img');
+  [[blogLogo, 'mutua-blog-logo.svg', 'ON Blog Mutua'], [companyLogo, 'mutua-madrilena-logo.svg', 'Mutua Madrileña']]
+    .forEach(([image, file, alt]) => {
+      if (!image) return;
+      if (!image.getAttribute('src')) image.src = codePath(`/icons/${file}`);
+      if (!image.alt) image.alt = alt;
+    });
 
-  block.querySelectorAll('a[href]').forEach((link) => {
-    const href = link.getAttribute('href');
+  const claim = logos.querySelector('p');
+  if (claim) claim.classList.add('footer-claim');
+}
 
-    if (href === '#copy-url') {
+function configureBreadcrumb(block) {
+  const breadcrumb = [...block.querySelectorAll('.default-content-wrapper')]
+    .find((element) => element.textContent.trim().toLowerCase() === 'breadcrumb');
+  if (!breadcrumb) return;
+
+  const link = document.createElement('a');
+  link.href = '/blog/';
+  link.textContent = 'Inicio';
+  breadcrumb.replaceChildren(link);
+  breadcrumb.classList.add('footer-breadcrumb');
+}
+
+function configureSocial(block) {
+  const columns = block.querySelector('.columns-4-cols');
+  const column = columns?.lastElementChild?.lastElementChild;
+  if (!column) return;
+
+  column.classList.add('footer-social');
+  const links = [...column.querySelectorAll('a')];
+  links.forEach((link, index) => {
+    const item = socialLinks[index];
+    if (!item) return;
+
+    link.setAttribute('aria-label', item.name);
+    link.title = item.name;
+    link.replaceChildren(Object.assign(document.createElement('img'), {
+      src: codePath(`/icons/${item.icon}`),
+      alt: '',
+      'aria-hidden': 'true',
+    }));
+
+    if (item.copy) {
+      link.href = '#copy-url';
       link.addEventListener('click', async (event) => {
         event.preventDefault();
         let status = block.querySelector('.footer-copy-status');
@@ -44,6 +94,8 @@ export default async function decorate(block) {
           link.insertAdjacentElement('afterend', status);
         }
 
+        const pageURL = new URL(window.location.href);
+        pageURL.hash = '';
         try {
           await navigator.clipboard.writeText(pageURL.href);
           status.textContent = 'Enlace copiado';
@@ -54,21 +106,36 @@ export default async function decorate(block) {
       return;
     }
 
-    try {
-      const shareURL = new URL(href, window.location.href);
-      const endpoint = shareEndpoints.find(({ host, path }) => (
-        (shareURL.hostname === host || shareURL.hostname.endsWith(`.${host}`))
-        && shareURL.pathname === path
-      ));
-
-      if (endpoint) {
-        shareURL.searchParams.set(endpoint.parameter, pageURL.href);
-        link.href = shareURL.href;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-      }
-    } catch {
-      // Ignore non-URL links and leave them as authored.
-    }
+    const shareURL = new URL(`https://${item.host}${item.path}`);
+    const pageURL = new URL(window.location.href);
+    pageURL.hash = '';
+    shareURL.searchParams.set(item.parameter, pageURL.href);
+    link.href = shareURL.href;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
   });
+}
+
+/** Load and decorate the authored footer fragment.
+ * @param {Element} block The footer block element
+ */
+export default async function decorate(block) {
+  const footerMeta = getMetadata('footer');
+  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  const fragment = await loadFragment(footerPath);
+  if (!fragment) return;
+
+  block.textContent = '';
+  const content = document.createElement('div');
+  while (fragment.firstElementChild) content.append(fragment.firstElementChild);
+  block.append(content);
+
+  // Remove temporary text left in the footer fragment during local authoring.
+  [...block.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).forEach((node) => {
+    if (/^(hello world!|hola mundo!)$/i.test(node.textContent.trim())) node.remove();
+  });
+
+  configureLogos(block);
+  configureBreadcrumb(block);
+  configureSocial(block);
 }
