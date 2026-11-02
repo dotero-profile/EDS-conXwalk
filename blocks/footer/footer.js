@@ -62,6 +62,12 @@ function configureBreadcrumb(block) {
   breadcrumb.classList.add('footer-breadcrumb');
 }
 
+function configureCopyright(block) {
+  const copyright = [...block.querySelectorAll('.default-content-wrapper')]
+    .find((element) => element.textContent.trim().startsWith('©'));
+  if (copyright) copyright.classList.add('footer-copyright');
+}
+
 function configureSocial(block) {
   const columns = block.querySelector('.columns-4-cols');
   const column = columns?.lastElementChild?.lastElementChild;
@@ -138,4 +144,5 @@ export default async function decorate(block) {
   configureLogos(block);
   configureBreadcrumb(block);
   configureSocial(block);
+  configureCopyright(block);
 }
