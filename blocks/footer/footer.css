@@ -22,18 +22,19 @@
 
 /* Top brand row: blog logo, blue claim and Mutua Madrileña logo. */
 .footer .columns-3-cols {
+  position: relative;
   margin: 50px auto;
 }
 
 .footer .columns-3-cols > div {
-  display: grid;
-  grid-template-columns: 1fr minmax(300px, 2fr) 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 24px;
 }
 
 .footer .columns-3-cols > div > div {
-  min-width: 0;
+  flex: 0 0 auto;
 }
 
 .footer .columns-3-cols .columns-img-col:first-child img {
@@ -45,6 +46,11 @@
 }
 
 .footer .columns-3-cols .footer-claim {
+  position: absolute;
+  right: 0;
+  left: 0;
+  display: table;
+  margin: auto;
   color: var(--footer-blue);
   font-size: 18px;
   text-align: center;
@@ -52,9 +58,21 @@
 
 /* Breadcrumb band. */
 .footer .footer-breadcrumb {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  max-width: none;
+  box-sizing: border-box;
+  transform: translateX(-50%);
   border-top: 1px solid var(--footer-border);
   border-bottom: 1px solid var(--footer-border);
-  padding: 25px 0;
+  padding: 30px 0;
+}
+
+.footer .footer-breadcrumb > p {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 .footer .footer-breadcrumb a {
@@ -65,14 +83,15 @@
 /* Link groups and vertical social toolbar. */
 .footer .columns-4-cols {
   position: relative;
-  margin: 40px auto;
+  margin: 0 auto;
 }
 
 .footer .columns-4-cols > div {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) 58px;
-  gap: 30px;
-  padding-right: 100px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px 100px;
+  max-width: 1140px;
+  margin: 40px 0;
 }
 
 .footer .columns-4-cols > div > div {
@@ -92,8 +111,8 @@
 .footer .columns-4-cols ul ul {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 15px;
+  margin-top: 0;
 }
 
 .footer .columns-4-cols ul ul li {
@@ -115,6 +134,7 @@
   position: absolute;
   top: 0;
   right: 0;
+  width: auto;
 }
 
 .footer .footer-social p {
@@ -151,14 +171,22 @@
 
 /* Legal links and copyright. */
 .footer .columns-2-cols {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  max-width: none;
+  box-sizing: border-box;
+  transform: translateX(-50%);
   border-top: 1px solid var(--footer-border);
-  padding: 20px 0 0;
+  padding: 20px 24px 30px;
 }
 
 .footer .columns-2-cols > div {
   display: flex;
   justify-content: center;
   gap: 30px;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .footer .columns-2-cols > div > div {
@@ -171,7 +199,13 @@
 }
 
 .footer .footer-copyright {
-  padding: 0 0 20px;
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  max-width: none;
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  padding: 0 24px 20px;
   text-align: center;
   font-size: 14px;
 }
@@ -182,9 +216,6 @@
     padding-left: 24px;
   }
 
-  .footer .columns-4-cols > div {
-    padding-right: 76px;
-  }
 }
 
 @media (width <= 767px) {
@@ -193,7 +224,6 @@
   }
 
   .footer .columns-3-cols > div {
-    grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
 
@@ -202,11 +232,19 @@
   }
 
   .footer .columns-3-cols .columns-img-col:last-child {
-    justify-self: end;
+    margin-left: auto;
+  }
+
+  .footer .columns-3-cols .columns-img-col:last-child img {
+    width: 37px;
   }
 
   .footer .footer-breadcrumb {
-    padding: 16px 0;
+    padding: 20px 0 12px;
+  }
+
+  .footer .footer-breadcrumb > p {
+    padding: 0 24px;
   }
 
   .footer .columns-4-cols {
@@ -215,16 +253,52 @@
 
   .footer .columns-4-cols > div {
     display: block;
-    padding: 0;
+    margin: 0;
   }
 
-  .footer .columns-4-cols > div > div:not(.footer-social) {
-    padding: 20px 0;
+  .footer .columns-4-cols > div > div:not(.footer-social) > ul > li {
+    position: relative;
+    padding: 24px;
     border-bottom: 1px solid var(--footer-border);
   }
 
   .footer .columns-4-cols ul ul {
-    gap: 8px;
+    display: none;
+    gap: 30px;
+    margin-top: 20px;
+  }
+
+  .footer .columns-4-cols .footer-link-group.is-open > ul {
+    display: flex;
+  }
+
+  .footer .footer-link-toggle {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .footer .footer-link-toggle::after {
+    position: absolute;
+    top: 2px;
+    left: 5px;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border-right: 1px solid currentcolor;
+    border-bottom: 1px solid currentcolor;
+    content: "";
+  }
+
+  .footer .footer-link-group.is-open .footer-link-toggle::after {
+    top: 8px;
+    transform: rotate(225deg);
   }
 
   .footer .footer-social {
@@ -246,6 +320,7 @@
 
   .footer .columns-2-cols {
     padding-top: 20px;
+    padding-bottom: 20px;
   }
 
   .footer .columns-2-cols > div {

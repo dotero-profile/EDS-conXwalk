@@ -21,7 +21,7 @@ const socialLinks = [
     icon: 'footer-x.svg',
     host: 'twitter.com',
     path: '/intent/tweet',
-    parameter: 'url',
+    parameter: 'text',
   },
   {
     name: 'Copiar enlace',
@@ -42,7 +42,15 @@ function configureLogos(block) {
   [[blogLogo, 'mutua-blog-logo.svg', 'ON Blog Mutua'], [companyLogo, 'mutua-madrilena-logo.svg', 'Mutua Madrileña']]
     .forEach(([image, file, alt]) => {
       if (!image) return;
-      if (!image.getAttribute('src')) image.src = codePath(`/icons/${file}`);
+      if (!image.getAttribute('src')) {
+        image.src = codePath(`/icons/${file}`);
+        if (image === companyLogo) {
+          const mobileLogo = document.createElement('source');
+          mobileLogo.media = '(max-width: 767px)';
+          mobileLogo.srcset = codePath('/icons/mutua-madrilena-mark.svg');
+          image.closest('picture')?.prepend(mobileLogo);
+        }
+      }
       if (!image.alt) image.alt = alt;
     });
 
@@ -104,7 +112,7 @@ function configureSocial(block) {
         pageURL.hash = '';
         try {
           await navigator.clipboard.writeText(pageURL.href);
-          status.textContent = 'Enlace copiado';
+          status.textContent = 'Enlace copiado al portapapeles';
         } catch {
           status.textContent = 'No se pudo copiar el enlace';
         }
@@ -119,6 +127,26 @@ function configureSocial(block) {
     link.href = shareURL.href;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
+  });
+}
+
+function configureMobileGroups(block) {
+  block.querySelectorAll('.columns-4-cols > div > div:not(.footer-social) > ul > li').forEach((group) => {
+    const list = group.querySelector(':scope > ul');
+    if (!list) return;
+
+    group.classList.add('footer-link-group');
+    const heading = [...group.children].find((child) => child.tagName !== 'UL');
+    const toggle = document.createElement('button');
+    toggle.className = 'footer-link-toggle';
+    toggle.type = 'button';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', `Mostrar enlaces de ${heading?.textContent.trim() || 'esta sección'}`);
+    toggle.addEventListener('click', () => {
+      const expanded = group.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(expanded));
+    });
+    group.append(toggle);
   });
 }
 
@@ -144,5 +172,6 @@ export default async function decorate(block) {
   configureLogos(block);
   configureBreadcrumb(block);
   configureSocial(block);
+  configureMobileGroups(block);
   configureCopyright(block);
 }
