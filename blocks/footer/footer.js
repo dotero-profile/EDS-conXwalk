@@ -131,6 +131,7 @@ function configureSocial(block) {
 }
 
 function configureMobileGroups(block) {
+  const mobileViewport = window.matchMedia('(max-width: 767px)');
   block.querySelectorAll('.columns-4-cols > div > div:not(.footer-social) > ul > li').forEach((group) => {
     const list = group.querySelector(':scope > ul');
     if (!list) return;
@@ -142,11 +143,33 @@ function configureMobileGroups(block) {
     toggle.type = 'button';
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', `Mostrar enlaces de ${heading?.textContent.trim() || 'esta sección'}`);
+
+    const syncList = (expanded) => {
+      if (!mobileViewport.matches) {
+        list.style.maxHeight = '';
+        list.style.marginTop = '';
+        list.inert = false;
+        list.removeAttribute('aria-hidden');
+        return;
+      }
+
+      list.inert = !expanded;
+      list.setAttribute('aria-hidden', String(!expanded));
+      list.style.maxHeight = expanded ? `${list.scrollHeight + 30}px` : '0px';
+      list.style.marginTop = expanded ? '20px' : '0';
+    };
+
     toggle.addEventListener('click', () => {
       const expanded = group.classList.toggle('is-open');
       toggle.setAttribute('aria-expanded', String(expanded));
+      syncList(expanded);
     });
     group.append(toggle);
+    syncList(false);
+    mobileViewport.addEventListener('change', () => syncList(group.classList.contains('is-open')));
+    window.addEventListener('resize', () => {
+      if (group.classList.contains('is-open')) syncList(true);
+    });
   });
 }
 

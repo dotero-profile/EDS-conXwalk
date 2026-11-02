@@ -6,7 +6,7 @@
 
   background: #fff;
   color: #333;
-  font-family: "Open Sans", Arial, sans-serif;
+  font-family: Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
 }
@@ -282,9 +282,13 @@
   }
 
   .footer .columns-4-cols ul ul {
-    display: none;
+    display: flex;
     gap: 30px;
-    margin-top: 20px;
+    max-height: 0;
+    margin-top: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 200ms ease, margin-top 200ms ease, opacity 150ms ease;
   }
 
   .footer .columns-4-cols ul ul li {
@@ -292,7 +296,8 @@
   }
 
   .footer .columns-4-cols .footer-link-group.is-open > ul {
-    display: flex;
+    margin-top: 20px;
+    opacity: 1;
   }
 
   .footer .footer-link-toggle {
@@ -318,6 +323,7 @@
     border-right: 1px solid currentcolor;
     border-bottom: 1px solid currentcolor;
     content: "";
+    transition: transform 200ms ease, top 200ms ease;
   }
 
   .footer .footer-link-group.is-open .footer-link-toggle::after {
