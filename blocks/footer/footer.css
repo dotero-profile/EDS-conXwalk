@@ -62,11 +62,10 @@
 /* Breadcrumb band. */
 .footer .footer-breadcrumb {
   position: relative;
-  left: 50%;
   width: 100vw;
   max-width: none;
+  margin-left: calc(50% - 50vw);
   box-sizing: border-box;
-  transform: translateX(-50%);
   border-top: 1px solid var(--footer-border);
   border-bottom: 1px solid var(--footer-border);
   padding: 30px 0;
@@ -202,6 +201,7 @@
 
 .footer .columns-2-cols > div {
   display: flex;
+  flex-direction: row;
   justify-content: center;
   gap: 30px;
   max-width: 1280px;
@@ -335,7 +335,9 @@
     position: static;
     display: flex;
     justify-content: center;
-    padding: 24px 0;
+    width: max-content;
+    margin: 24px auto;
+    padding: 0;
     border: 1px solid var(--footer-blue);
   }
 
@@ -361,11 +363,12 @@
     border-top: 0;
     padding-top: 20px;
     padding-bottom: 20px;
+    font-size: 14px;
   }
 
   .footer .columns-2-cols > div {
-    flex-wrap: wrap;
-    gap: 12px 24px;
+    flex-flow: row nowrap;
+    gap: 30px;
   }
 
   .footer .footer-copyright {

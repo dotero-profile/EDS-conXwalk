@@ -38,7 +38,9 @@ function configureLogos(block) {
   const logos = block.querySelector('.columns-3-cols');
   if (!logos) return;
 
-  const [blogLogo, , companyLogo] = logos.querySelectorAll('img');
+  const [blogColumn, claimColumn, companyColumn] = logos.firstElementChild?.children || [];
+  const blogLogo = blogColumn?.querySelector('img');
+  const companyLogo = companyColumn?.querySelector('img');
   [[blogLogo, 'mutua-blog-logo.svg', 'ON Blog Mutua'], [companyLogo, 'mutua-madrilena-logo.svg', 'Mutua Madrileña']]
     .forEach(([image, file, alt]) => {
       if (!image) return;
@@ -54,7 +56,7 @@ function configureLogos(block) {
       if (!image.alt) image.alt = alt;
     });
 
-  const claim = logos.querySelector('p');
+  const claim = claimColumn?.querySelector('p');
   if (claim) claim.classList.add('footer-claim');
 }
 
