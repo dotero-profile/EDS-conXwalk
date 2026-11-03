@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity -- semantic selector combinations are intentionally ordered by component. */
+
 /* RESET & BASE */
 .footer-wrapper {
   background-color: #fff;
@@ -7,14 +9,14 @@
   width: 100%;
 }
 
-#footerPage {
+#footer-page {
   max-width: 1200px;
   margin: 0 auto;
   padding: 30px 20px;
 }
 
 /* 1. LOGOS Y CLAIM */
-#footerPage .contentLogos {
+#footer-page .content-logos {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,12 +24,12 @@
   border-bottom: 1px solid #e5e5e5;
 }
 
-#footerPage .contentLogos .logo img {
+#footer-page .content-logos .logo img {
   height: 36px;
   width: auto;
 }
 
-#footerPage .contentLogos .claim {
+#footer-page .content-logos .claim {
   font-size: 15px;
   color: #005699;
   font-weight: 500;
@@ -35,28 +37,28 @@
 }
 
 /* 2. BREADCRUMB */
-#footerPage .breadcrumb {
+#footer-page .breadcrumb {
   padding: 15px 0;
   border-bottom: 1px solid #e5e5e5;
   font-size: 14px;
   font-weight: bold;
 }
 
-#footerPage .breadcrumb .content {
+#footer-page .breadcrumb .content {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 /* 3. MENÚ DE ENLACES Y REDES SOCIALES (ESCRITORIO) */
-#footerPage .footerMenu {
+#footer-page .footer-menu {
   display: flex;
   justify-content: space-between;
   padding: 35px 0;
   border-bottom: 1px solid #e5e5e5;
 }
 
-#footerPage .lstLinks {
+#footer-page .lst-links {
   display: flex;
   gap: 60px;
   list-style: none;
@@ -64,7 +66,7 @@
   padding: 0;
 }
 
-#footerPage .lstLinks .section .section-title {
+#footer-page .lst-links .section .section-title {
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 15px;
@@ -72,29 +74,29 @@
   color: #111;
 }
 
-#footerPage .lstLinks .section ul {
+#footer-page .lst-links .section ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-#footerPage .lstLinks .section ul li {
+#footer-page .lst-links .section ul li {
   margin-bottom: 10px;
 }
 
-#footerPage .lstLinks .section ul li a {
+#footer-page .lst-links .section ul li a {
   color: #555;
   text-decoration: none;
   font-size: 14px;
   transition: color 0.2s;
 }
 
-#footerPage .lstLinks .section ul li a:hover {
+#footer-page .lst-links .section ul li a:hover {
   color: #005699;
 }
 
 /* REDES SOCIALES EN CAJA VERTICAL */
-#footerPage .social.vertical ul {
+#footer-page .social.vertical ul {
   display: flex;
   flex-direction: column;
   list-style: none;
@@ -103,7 +105,7 @@
   border: 1px solid #005699;
 }
 
-#footerPage .social.vertical ul li a {
+#footer-page .social.vertical ul li a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -113,69 +115,69 @@
   transition: background-color 0.2s;
 }
 
-#footerPage .social.vertical ul li:last-child a {
+#footer-page .social.vertical ul li:last-child a {
   border-bottom: none;
 }
 
-#footerPage .social.vertical ul li a:hover {
+#footer-page .social.vertical ul li a:hover {
   background-color: #f0f7fc;
 }
 
-#footerPage .social.vertical ul li a img {
+#footer-page .social.vertical ul li a img {
   width: 20px;
   height: 20px;
 }
 
 /* 4. COPYRIGHT Y LEGALES */
-#footerPage .copyright {
+#footer-page .copyright {
   text-align: center;
   padding-top: 25px;
   font-size: 13px;
   color: #666;
 }
 
-#footerPage .legales ul {
+#footer-page .legales ul {
   display: flex;
   justify-content: center;
   gap: 20px;
   list-style: none;
-  margin: 0 0 15px 0;
+  margin: 0 0 15px;
   padding: 0;
 }
 
-#footerPage .legales ul li a {
+#footer-page .legales ul li a {
   color: #333;
   text-decoration: none;
 }
 
-#footerPage .legales ul li a:hover {
+#footer-page .legales ul li a:hover {
   text-decoration: underline;
 }
 
 /* --- VISTA MÓVIL (<= 768px) --- */
-@media (max-width: 768px) {
-  #footerPage .contentLogos .claim {
+@media (width <= 768px) {
+  #footer-page .content-logos .claim {
     display: none; /* Se oculta el claim central en móvil */
   }
 
-  #footerPage .footerMenu {
+  #footer-page .footer-menu {
     flex-direction: column;
     padding: 0;
   }
 
-  #footerPage .lstLinks {
+  #footer-page .lst-links {
     flex-direction: column;
     gap: 0;
   }
 
-  #footerPage .lstLinks .section {
+  #footer-page .lst-links .section {
     border-bottom: 1px solid #e5e5e5;
     padding: 15px 0;
     cursor: pointer;
     position: relative;
   }
 
-  #footerPage .lstLinks .section .arrow {
+  #footer-page .lst-links .section .arrow {
     position: absolute;
     right: 0;
     top: 18px;
@@ -187,34 +189,34 @@
     transition: transform 0.3s;
   }
 
-  #footerPage .lstLinks .section.is-open .arrow {
+  #footer-page .lst-links .section.is-open .arrow {
     transform: rotate(-135deg);
   }
 
-  #footerPage .lstLinks .section ul {
+  #footer-page .lst-links .section ul {
     display: none; /* Acordeón replegado por defecto */
     margin-top: 15px;
   }
 
-  #footerPage .lstLinks .section.is-open ul {
+  #footer-page .lst-links .section.is-open ul {
     display: block;
   }
 
   /* Redes Sociales horizontal en móvil */
-  #footerPage .social.vertical {
+  #footer-page .social.vertical {
     margin: 30px auto 10px;
   }
 
-  #footerPage .social.vertical ul {
+  #footer-page .social.vertical ul {
     flex-direction: row;
   }
 
-  #footerPage .social.vertical ul li a {
+  #footer-page .social.vertical ul li a {
     border-bottom: none;
     border-right: 1px solid #005699;
   }
 
-  #footerPage .social.vertical ul li:last-child a {
+  #footer-page .social.vertical ul li:last-child a {
     border-right: none;
   }
 }

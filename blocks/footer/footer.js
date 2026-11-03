@@ -4,7 +4,9 @@ const SOCIAL_NETWORKS = [
   { name: 'Facebook', class: 'facebook', icon: '/icons/icoFacebook.svg' },
   { name: 'LinkedIn', class: 'linkedin', icon: '/icons/icoLinkedin.svg' },
   { name: 'X', class: 'twitter', icon: '/icons/icoX.svg' },
-  { name: 'Copiar enlace', class: 'copyLink', icon: '/icons/icoLink.svg', copy: true },
+  {
+    name: 'Copiar enlace', class: 'copyLink', icon: '/icons/icoLink.svg', copy: true,
+  },
 ];
 
 export default function decorate(block) {
@@ -18,13 +20,13 @@ export default function decorate(block) {
 
   // --- CONTENEDOR PRINCIPAL ---
   const footerNode = document.createElement('footer');
-  footerNode.id = 'footerPage';
+  footerNode.id = 'footer-page';
   footerNode.setAttribute('role', 'contentinfo');
 
   // --- 1. CABECERA: LOGOS Y CLAIM ---
   if (logosRow) {
     const contentLogos = document.createElement('div');
-    contentLogos.className = 'contentLogos';
+    contentLogos.className = 'content-logos';
 
     const [imgCol1, claimCol, imgCol2] = logosRow.querySelectorAll(':scope > div > div');
 
@@ -87,12 +89,12 @@ export default function decorate(block) {
   // --- 3. MENÚ PRINCIPAL Y REDES SOCIALES ---
   if (mainContentRow) {
     const footerMenu = document.createElement('nav');
-    footerMenu.className = 'footerMenu content';
+    footerMenu.className = 'footer-menu content';
     footerMenu.setAttribute('role', 'navigation');
     footerMenu.setAttribute('aria-label', 'Menú secundario');
 
     const lstLinks = document.createElement('ul');
-    lstLinks.className = 'lstLinks';
+    lstLinks.className = 'lst-links';
 
     const columns = mainContentRow.querySelectorAll(':scope > div > div');
 
