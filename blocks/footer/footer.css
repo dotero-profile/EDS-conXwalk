@@ -1,377 +1,220 @@
-/* The layout rules are grouped by footer row; specificity order follows that structure. */
-/* stylelint-disable no-descending-specificity */
-.footer {
-  --footer-blue: #004b93;
-  --footer-border: #cdcdcd;
-
-  background: #fff;
+/* RESET & BASE */
+.footer-wrapper {
+  background-color: #fff;
+  border-top: 1px solid #e5e5e5;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: #333;
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
+  width: 100%;
 }
 
-.footer > div {
+#footerPage {
+  max-width: 1200px;
   margin: 0 auto;
-  max-width: 1280px;
+  padding: 30px 20px;
 }
 
-.footer p {
-  margin: 0;
-}
-
-/* Top brand row: blog logo, blue claim and Mutua Madrileña logo. */
-.footer .columns-3-cols {
-  position: relative;
-  margin: 50px auto;
-}
-
-.footer .columns-3-cols > div {
-  position: relative;
+/* 1. LOGOS Y CLAIM */
+#footerPage .contentLogos {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  justify-content: space-between;
+  padding-bottom: 25px;
+  border-bottom: 1px solid #e5e5e5;
 }
 
-.footer .columns-3-cols > div > div {
-  flex: 0 0 auto;
+#footerPage .contentLogos .logo img {
+  height: 36px;
+  width: auto;
 }
 
-.footer .columns-3-cols .columns-img-col:first-child img {
-  width: 78px;
-}
-
-.footer .columns-3-cols .columns-img-col:last-child img {
-  width: 193px;
-}
-
-.footer .columns-3-cols .footer-claim {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 0;
-  display: table;
-  margin: auto;
-  transform: translateY(-50%);
-  color: var(--footer-blue);
-  font-size: 18px;
+#footerPage .contentLogos .claim {
+  font-size: 15px;
+  color: #005699;
+  font-weight: 500;
   text-align: center;
 }
 
-/* Breadcrumb band. */
-.footer .footer-breadcrumb {
-  position: relative;
-  width: 100vw;
-  max-width: none;
-  margin-left: calc(50% - 50vw);
-  box-sizing: border-box;
-  border-top: 1px solid var(--footer-border);
-  border-bottom: 1px solid var(--footer-border);
-  padding: 30px 0;
+/* 2. BREADCRUMB */
+#footerPage .breadcrumb {
+  padding: 15px 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-.footer .footer-breadcrumb > p {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.footer .footer-breadcrumb a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Link groups and vertical social toolbar. */
-.footer .columns-4-cols {
-  position: relative;
-  margin: 0 auto;
-}
-
-.footer .columns-4-cols > div {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 30px 100px;
-  max-width: 1140px;
-  margin: 40px 0;
-}
-
-.footer .columns-4-cols > div > div {
-  flex: 0 1 auto;
-}
-
-.footer .columns-4-cols ul {
+#footerPage .breadcrumb .content {
+  list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* 3. MENÚ DE ENLACES Y REDES SOCIALES (ESCRITORIO) */
+#footerPage .footerMenu {
+  display: flex;
+  justify-content: space-between;
+  padding: 35px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+#footerPage .lstLinks {
+  display: flex;
+  gap: 60px;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.footer .columns-4-cols > div > div:not(.footer-social) > ul > li {
+#footerPage .lstLinks .section .section-title {
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 15px;
+  display: block;
+  color: #111;
+}
+
+#footerPage .lstLinks .section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#footerPage .lstLinks .section ul li {
+  margin-bottom: 10px;
+}
+
+#footerPage .lstLinks .section ul li a {
+  color: #555;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+#footerPage .lstLinks .section ul li a:hover {
+  color: #005699;
+}
+
+/* REDES SOCIALES EN CAJA VERTICAL */
+#footerPage .social.vertical ul {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  font-weight: 600;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #005699;
 }
 
-.footer .columns-4-cols ul ul {
+#footerPage .social.vertical ul li a {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-  margin-top: 0;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-bottom: 1px solid #005699;
+  transition: background-color 0.2s;
 }
 
-.footer .columns-4-cols ul ul li {
-  font-weight: 400;
+#footerPage .social.vertical ul li:last-child a {
+  border-bottom: none;
 }
 
-.footer .columns-4-cols a {
-  color: inherit;
+#footerPage .social.vertical ul li a:hover {
+  background-color: #f0f7fc;
+}
+
+#footerPage .social.vertical ul li a img {
+  width: 20px;
+  height: 20px;
+}
+
+/* 4. COPYRIGHT Y LEGALES */
+#footerPage .copyright {
+  text-align: center;
+  padding-top: 25px;
+  font-size: 13px;
+  color: #666;
+}
+
+#footerPage .legales ul {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  list-style: none;
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+
+#footerPage .legales ul li a {
+  color: #333;
   text-decoration: none;
 }
 
-.footer .columns-4-cols a:hover,
-.footer .columns-2-cols a:hover,
-.footer .footer-breadcrumb a:hover {
+#footerPage .legales ul li a:hover {
   text-decoration: underline;
 }
 
-.footer .footer-social {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: auto;
-  border: 1px solid var(--footer-blue);
-}
-
-.footer .footer-social p {
-  margin: 0;
-}
-
-.footer .footer-social a {
-  display: grid;
-  width: 56px;
-  height: 56px;
-  place-items: center;
-  background: #fff;
-}
-
-.footer .footer-social p a {
-  border-bottom: 1px solid var(--footer-blue);
-}
-
-.footer .footer-social p + p a {
-  border-top: 0;
-}
-
-.footer .footer-social p:last-child a {
-  border-bottom: 0;
-}
-
-.footer .footer-social img {
-  display: block;
-  width: 24px;
-  height: 24px;
-}
-
-.footer .footer-copy-status {
-  position: absolute;
-  right: 0;
-  margin-top: 8px;
-  color: var(--footer-blue);
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.footer .footer-link-toggle {
-  display: none;
-}
-
-/* Legal links and copyright. */
-.footer .columns-2-cols {
-  position: relative;
-  left: 50%;
-  width: 100vw;
-  max-width: none;
-  box-sizing: border-box;
-  transform: translateX(-50%);
-  border-top: 1px solid var(--footer-border);
-  padding: 20px 24px 30px;
-}
-
-.footer .columns-2-cols > div {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 30px;
-  max-width: 1280px;
-  margin: 0 auto;
-}
-
-.footer .columns-2-cols > div > div {
-  flex: 0 0 auto;
-}
-
-.footer .columns-2-cols a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.footer .footer-copyright {
-  position: relative;
-  left: 50%;
-  width: 100vw;
-  max-width: none;
-  box-sizing: border-box;
-  transform: translateX(-50%);
-  padding: 0 24px 20px;
-  text-align: center;
-  font-size: 14px;
-}
-
-@media (width <= 1024px) {
-  .footer > div {
-    padding-right: 24px;
-    padding-left: 24px;
+/* --- VISTA MÓVIL (<= 768px) --- */
+@media (max-width: 768px) {
+  #footerPage .contentLogos .claim {
+    display: none; /* Se oculta el claim central en móvil */
   }
 
-}
-
-@media (width <= 767px) {
-  .footer .columns-3-cols {
-    margin: 24px auto;
-  }
-
-  .footer .columns-3-cols > div {
-    gap: 16px;
-  }
-
-  .footer .columns-3-cols .footer-claim {
-    display: none;
-  }
-
-  .footer .columns-3-cols .columns-img-col:last-child {
-    margin-left: auto;
-  }
-
-  .footer .columns-3-cols .columns-img-col:last-child img {
-    width: 37px;
-  }
-
-  .footer .footer-breadcrumb {
-    padding: 20px 0 12px;
-  }
-
-  .footer .footer-breadcrumb > p {
-    padding: 0 24px;
-  }
-
-  .footer .columns-4-cols {
-    margin: 0 auto;
-  }
-
-  .footer .columns-4-cols > div {
-    display: block;
-    margin: 0;
-  }
-
-  .footer .columns-4-cols > div > div:not(.footer-social) > ul > li {
-    position: relative;
-    padding: 24px;
-    border-bottom: 1px solid var(--footer-border);
-  }
-
-  .footer .columns-4-cols ul ul {
-    display: flex;
-    gap: 30px;
-    max-height: 0;
-    margin-top: 0;
-    overflow: hidden;
-    opacity: 0;
-    transition: max-height 200ms ease, margin-top 200ms ease, opacity 150ms ease;
-  }
-
-  .footer .columns-4-cols ul ul li {
-    margin-top: 30px;
-  }
-
-  .footer .columns-4-cols .footer-link-group.is-open > ul {
-    margin-top: 20px;
-    opacity: 1;
-  }
-
-  .footer .footer-link-toggle {
-    display: block;
-    position: absolute;
-    top: 20px;
-    right: 24px;
-    width: 24px;
-    height: 24px;
+  #footerPage .footerMenu {
+    flex-direction: column;
     padding: 0;
-    border: 0;
-    background: transparent;
+  }
+
+  #footerPage .lstLinks {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  #footerPage .lstLinks .section {
+    border-bottom: 1px solid #e5e5e5;
+    padding: 15px 0;
     cursor: pointer;
+    position: relative;
   }
 
-  .footer .footer-link-toggle::after {
+  #footerPage .lstLinks .section .arrow {
     position: absolute;
-    top: 2px;
-    left: 5px;
-    width: 12px;
-    height: 12px;
+    right: 0;
+    top: 18px;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #555;
+    border-bottom: 2px solid #555;
     transform: rotate(45deg);
-    border-right: 1px solid currentcolor;
-    border-bottom: 1px solid currentcolor;
-    content: "";
-    transition: transform 200ms ease, top 200ms ease;
+    transition: transform 0.3s;
   }
 
-  .footer .footer-link-group.is-open .footer-link-toggle::after {
-    top: 8px;
-    transform: rotate(225deg);
+  #footerPage .lstLinks .section.is-open .arrow {
+    transform: rotate(-135deg);
   }
 
-  .footer .footer-social {
-    position: static;
-    display: flex;
-    justify-content: center;
-    width: max-content;
-    margin: 24px auto;
-    padding: 0;
-    border: 1px solid var(--footer-blue);
+  #footerPage .lstLinks .section ul {
+    display: none; /* Acordeón replegado por defecto */
+    margin-top: 15px;
   }
 
-  .footer .footer-social p a {
-    border-bottom: 0;
-    border-right: 1px solid var(--footer-blue);
+  #footerPage .lstLinks .section.is-open ul {
+    display: block;
   }
 
-  .footer .footer-social p + p a {
-    border-top: 0;
+  /* Redes Sociales horizontal en móvil */
+  #footerPage .social.vertical {
+    margin: 30px auto 10px;
   }
 
-  .footer .footer-social p:last-child a {
-    border-right: 0;
+  #footerPage .social.vertical ul {
+    flex-direction: row;
   }
 
-  .footer .footer-copy-status {
-    right: 50%;
-    transform: translateX(50%);
+  #footerPage .social.vertical ul li a {
+    border-bottom: none;
+    border-right: 1px solid #005699;
   }
 
-  .footer .columns-2-cols {
-    border-top: 0;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    font-size: 14px;
-  }
-
-  .footer .columns-2-cols > div {
-    flex-flow: row nowrap;
-    gap: 30px;
-  }
-
-  .footer .footer-copyright {
-    padding: 20px 0;
+  #footerPage .social.vertical ul li:last-child a {
+    border-right: none;
   }
 }

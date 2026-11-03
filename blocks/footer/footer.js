@@ -1,202 +1,205 @@
-import { getMetadata } from '../../scripts/aem.js';
-import { loadFragment } from '../fragment/fragment.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
-const socialLinks = [
-  {
-    name: 'Facebook',
-    icon: 'footer-facebook.svg',
-    host: 'facebook.com',
-    path: '/sharer/sharer.php',
-    parameter: 'u',
-  },
-  {
-    name: 'LinkedIn',
-    icon: 'footer-linkedin.svg',
-    host: 'linkedin.com',
-    path: '/sharing/share-offsite/',
-    parameter: 'url',
-  },
-  {
-    name: 'X',
-    icon: 'footer-x.svg',
-    host: 'twitter.com',
-    path: '/intent/tweet',
-    parameter: 'text',
-  },
-  {
-    name: 'Copiar enlace',
-    icon: 'footer-copy-link.svg',
-    copy: true,
-  },
+const SOCIAL_NETWORKS = [
+  { name: 'Facebook', class: 'facebook', icon: '/icons/icoFacebook.svg' },
+  { name: 'LinkedIn', class: 'linkedin', icon: '/icons/icoLinkedin.svg' },
+  { name: 'X', class: 'twitter', icon: '/icons/icoX.svg' },
+  { name: 'Copiar enlace', class: 'copyLink', icon: '/icons/icoLink.svg', copy: true },
 ];
 
-function codePath(path) {
-  return `${window.hlx.codeBasePath || ''}${path}`;
-}
+export default function decorate(block) {
+  // Capturamos las secciones principales que vienen del .plain.html
+  const columnsList = block.querySelectorAll(':scope > .columns');
+  const logosRow = columnsList[0];
+  const breadcrumbPara = block.querySelector(':scope > p');
+  const mainContentRow = columnsList[1];
+  const legalRow = columnsList[2];
+  const copyrightPara = block.querySelectorAll(':scope > p')[1] || block.querySelector(':scope > p:last-child');
 
-function configureLogos(block) {
-  const logos = block.querySelector('.columns-3-cols');
-  if (!logos) return;
+  // --- CONTENEDOR PRINCIPAL ---
+  const footerNode = document.createElement('footer');
+  footerNode.id = 'footerPage';
+  footerNode.setAttribute('role', 'contentinfo');
 
-  const [blogColumn, claimColumn, companyColumn] = logos.firstElementChild?.children || [];
-  const blogLogo = blogColumn?.querySelector('img');
-  const companyLogo = companyColumn?.querySelector('img');
-  [[blogLogo, 'mutua-blog-logo.svg', 'ON Blog Mutua'], [companyLogo, 'mutua-madrilena-logo.svg', 'Mutua Madrileña']]
-    .forEach(([image, file, alt]) => {
-      if (!image) return;
-      if (!image.getAttribute('src')) {
-        image.src = codePath(`/icons/${file}`);
-        if (image === companyLogo) {
-          const mobileLogo = document.createElement('source');
-          mobileLogo.media = '(max-width: 767px)';
-          mobileLogo.srcset = codePath('/icons/mutua-madrilena-mark.svg');
-          image.closest('picture')?.prepend(mobileLogo);
-        }
-      }
-      if (!image.alt) image.alt = alt;
-    });
+  // --- 1. CABECERA: LOGOS Y CLAIM ---
+  if (logosRow) {
+    const contentLogos = document.createElement('div');
+    contentLogos.className = 'contentLogos';
 
-  const claim = claimColumn?.querySelector('p');
-  if (claim) claim.classList.add('footer-claim');
-}
+    const [imgCol1, claimCol, imgCol2] = logosRow.querySelectorAll(':scope > div > div');
 
-function configureBreadcrumb(block) {
-  const breadcrumb = [...block.querySelectorAll('.default-content-wrapper')]
-    .find((element) => element.textContent.trim().toLowerCase() === 'breadcrumb');
-  if (!breadcrumb) return;
+    // Logo ON
+    const logoONLink = document.createElement('a');
+    logoONLink.href = '/';
+    logoONLink.className = 'logo';
+    logoONLink.setAttribute('rel', 'home');
+    const imgON = imgCol1?.querySelector('img');
+    if (imgON) {
+      if (!imgON.src || imgON.src.includes('about:error')) imgON.src = '/icons/logo.svg';
+      imgON.alt = imgON.alt || 'Logotipo ON';
+      logoONLink.append(imgON);
+    }
+    contentLogos.append(logoONLink);
 
-  const link = document.createElement('a');
-  link.href = '/blog/';
-  link.textContent = 'Inicio';
-  breadcrumb.replaceChildren(link);
-  breadcrumb.classList.add('footer-breadcrumb');
-}
-
-function configureCopyright(block) {
-  const copyright = [...block.querySelectorAll('.default-content-wrapper')]
-    .find((element) => element.textContent.trim().startsWith('©'));
-  if (copyright) copyright.classList.add('footer-copyright');
-}
-
-function configureSocial(block) {
-  const columns = block.querySelector('.columns-4-cols');
-  const column = columns?.lastElementChild?.lastElementChild;
-  if (!column) return;
-
-  column.classList.add('footer-social');
-  const links = [...column.querySelectorAll('a')];
-  links.forEach((link, index) => {
-    const item = socialLinks[index];
-    if (!item) return;
-
-    link.setAttribute('aria-label', item.name);
-    link.title = item.name;
-    link.replaceChildren(Object.assign(document.createElement('img'), {
-      src: codePath(`/icons/${item.icon}`),
-      alt: '',
-      'aria-hidden': 'true',
-    }));
-
-    if (item.copy) {
-      link.href = '#copy-url';
-      link.addEventListener('click', async (event) => {
-        event.preventDefault();
-        let status = block.querySelector('.footer-copy-status');
-        if (!status) {
-          status = document.createElement('span');
-          status.className = 'footer-copy-status';
-          status.setAttribute('role', 'status');
-          status.setAttribute('aria-live', 'polite');
-          link.insertAdjacentElement('afterend', status);
-        }
-
-        const pageURL = new URL(window.location.href);
-        pageURL.hash = '';
-        try {
-          await navigator.clipboard.writeText(pageURL.href);
-          status.textContent = 'Enlace copiado al portapapeles';
-        } catch {
-          status.textContent = 'No se pudo copiar el enlace';
-        }
-      });
-      return;
+    // Claim
+    if (claimCol) {
+      const claimSpan = document.createElement('span');
+      claimSpan.className = 'claim';
+      claimSpan.textContent = claimCol.textContent.trim();
+      moveInstrumentation(claimCol, claimSpan);
+      contentLogos.append(claimSpan);
     }
 
-    const shareURL = new URL(`https://${item.host}${item.path}`);
-    const pageURL = new URL(window.location.href);
-    pageURL.hash = '';
-    shareURL.searchParams.set(item.parameter, pageURL.href);
-    link.href = shareURL.href;
-    link.target = '_blank';
-    link.rel = 'noopener noreferrer';
-  });
-}
+    // Logo Mutua Madrileña
+    const logoMMLink = document.createElement('a');
+    logoMMLink.href = 'https://www.mutua.es/';
+    logoMMLink.target = '_blank';
+    logoMMLink.rel = 'noopener noreferrer';
+    logoMMLink.title = 'Se abre en nueva pestaña';
+    const imgMM = imgCol2?.querySelector('img');
+    if (imgMM) {
+      if (!imgMM.src || imgMM.src.includes('about:error')) imgMM.src = '/icons/logoMM.svg';
+      imgMM.alt = imgMM.alt || 'Logotipo Mutua Madrileña';
+      logoMMLink.append(imgMM);
+    }
+    contentLogos.append(logoMMLink);
 
-function configureMobileGroups(block) {
-  const mobileViewport = window.matchMedia('(max-width: 767px)');
-  block.querySelectorAll('.columns-4-cols > div > div:not(.footer-social) > ul > li').forEach((group) => {
-    const list = group.querySelector(':scope > ul');
-    if (!list) return;
+    footerNode.append(contentLogos);
+  }
 
-    group.classList.add('footer-link-group');
-    const heading = [...group.children].find((child) => child.tagName !== 'UL');
-    const toggle = document.createElement('button');
-    toggle.className = 'footer-link-toggle';
-    toggle.type = 'button';
-    toggle.setAttribute('aria-expanded', 'false');
-    toggle.setAttribute('aria-label', `Mostrar enlaces de ${heading?.textContent.trim() || 'esta sección'}`);
+  // --- 2. BREADCRUMB ---
+  const breadcrumbNav = document.createElement('nav');
+  breadcrumbNav.className = 'breadcrumb';
+  breadcrumbNav.setAttribute('role', 'navigation');
+  breadcrumbNav.setAttribute('aria-label', 'Enlaces de ayuda a la navegación');
 
-    const syncList = (expanded) => {
-      if (!mobileViewport.matches) {
-        list.style.maxHeight = '';
-        list.style.marginTop = '';
-        list.inert = false;
-        list.removeAttribute('aria-hidden');
-        return;
+  const breadcrumbContent = document.createElement('ul');
+  breadcrumbContent.className = 'content';
+  const breadcrumbItem = document.createElement('li');
+  breadcrumbItem.textContent = breadcrumbPara ? breadcrumbPara.textContent.trim() : 'Inicio';
+  if (breadcrumbPara) moveInstrumentation(breadcrumbPara, breadcrumbItem);
+  breadcrumbContent.append(breadcrumbItem);
+
+  breadcrumbNav.innerHTML = '<span class="sr-only">Estás en:</span>';
+  breadcrumbNav.append(breadcrumbContent);
+  footerNode.append(breadcrumbNav);
+
+  // --- 3. MENÚ PRINCIPAL Y REDES SOCIALES ---
+  if (mainContentRow) {
+    const footerMenu = document.createElement('nav');
+    footerMenu.className = 'footerMenu content';
+    footerMenu.setAttribute('role', 'navigation');
+    footerMenu.setAttribute('aria-label', 'Menú secundario');
+
+    const lstLinks = document.createElement('ul');
+    lstLinks.className = 'lstLinks';
+
+    const columns = mainContentRow.querySelectorAll(':scope > div > div');
+
+    // Procesamos las 3 columnas de listas (Categorías, Productos, Otras páginas)
+    for (let i = 0; i < Math.min(3, columns.length); i += 1) {
+      const col = columns[i];
+      const sectionLi = document.createElement('li');
+      sectionLi.className = 'section';
+
+      const titleHeader = col.querySelector('strong')?.textContent.trim() || '';
+      const titleSpan = document.createElement('span');
+      titleSpan.className = 'section-title';
+      titleSpan.textContent = titleHeader;
+
+      const arrowSpan = document.createElement('span');
+      arrowSpan.className = 'arrow';
+
+      sectionLi.append(titleSpan);
+      sectionLi.append(arrowSpan);
+
+      // Desplegable en móvil
+      sectionLi.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sectionLi.classList.toggle('is-open');
+        }
+      });
+
+      const innerUl = col.querySelector('ul ul') || col.querySelector('ul');
+      if (innerUl) {
+        moveInstrumentation(col, sectionLi);
+        sectionLi.append(innerUl);
       }
 
-      list.inert = !expanded;
-      list.setAttribute('aria-hidden', String(!expanded));
-      list.style.maxHeight = expanded ? `${list.scrollHeight + 30}px` : '0px';
-      list.style.marginTop = expanded ? '20px' : '0';
-    };
+      lstLinks.append(sectionLi);
+    }
 
-    toggle.addEventListener('click', () => {
-      const expanded = group.classList.toggle('is-open');
-      toggle.setAttribute('aria-expanded', String(expanded));
-      syncList(expanded);
+    footerMenu.append(lstLinks);
+
+    // Columna 4: Redes Sociales
+    const socialCol = columns[3];
+    const socialNav = document.createElement('nav');
+    socialNav.className = 'social vertical';
+    socialNav.setAttribute('aria-label', 'Redes Sociales');
+    socialNav.setAttribute('role', 'region');
+
+    const socialUl = document.createElement('ul');
+    const authoredLinks = socialCol ? [...socialCol.querySelectorAll('a')] : [];
+
+    SOCIAL_NETWORKS.forEach((net, index) => {
+      const li = document.createElement('li');
+      const a = authoredLinks[index] || document.createElement('a');
+
+      a.className = net.class;
+      a.title = net.name;
+
+      if (net.copy) {
+        a.href = '#copy-url';
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          navigator.clipboard.writeText(window.location.href);
+        });
+      } else {
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+      }
+
+      const iconImg = document.createElement('img');
+      iconImg.src = net.icon;
+      iconImg.alt = net.name;
+      a.replaceChildren(iconImg);
+
+      li.append(a);
+      socialUl.append(li);
     });
-    group.append(toggle);
-    syncList(false);
-    mobileViewport.addEventListener('change', () => syncList(group.classList.contains('is-open')));
-    window.addEventListener('resize', () => {
-      if (group.classList.contains('is-open')) syncList(true);
+
+    socialNav.append(socialUl);
+    footerMenu.append(socialNav);
+    footerNode.append(footerMenu);
+  }
+
+  // --- 4. COPYRIGHT Y LEGALES ---
+  const copyrightDiv = document.createElement('div');
+  copyrightDiv.className = 'copyright';
+
+  if (legalRow) {
+    const legalesNav = document.createElement('nav');
+    legalesNav.className = 'legales';
+    const legalUl = document.createElement('ul');
+
+    const legalLinks = legalRow.querySelectorAll('a');
+    legalLinks.forEach((link) => {
+      const li = document.createElement('li');
+      li.append(link);
+      legalUl.append(li);
     });
-  });
-}
 
-/** Load and decorate the authored footer fragment.
- * @param {Element} block The footer block element
- */
-export default async function decorate(block) {
-  const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
-  const fragment = await loadFragment(footerPath);
-  if (!fragment) return;
+    legalesNav.append(legalUl);
+    copyrightDiv.append(legalesNav);
+  }
 
-  block.textContent = '';
-  const content = document.createElement('div');
-  while (fragment.firstElementChild) content.append(fragment.firstElementChild);
-  block.append(content);
+  if (copyrightPara) {
+    const copyP = document.createElement('p');
+    copyP.textContent = copyrightPara.textContent.trim();
+    moveInstrumentation(copyrightPara, copyP);
+    copyrightDiv.append(copyP);
+  }
 
-  // Remove temporary text left in the footer fragment during local authoring.
-  [...block.childNodes].filter((node) => node.nodeType === Node.TEXT_NODE).forEach((node) => {
-    if (/^(hello world!|hola mundo!)$/i.test(node.textContent.trim())) node.remove();
-  });
-
-  configureLogos(block);
-  configureBreadcrumb(block);
-  configureSocial(block);
-  configureMobileGroups(block);
-  configureCopyright(block);
+  // Reemplazamos el contenedor del bloque manteniendo viva la autoría
+  block.replaceChildren(footerNode);
 }

@@ -21,6 +21,120 @@
           "name": "keywords",
           "multi": true,
           "label": "Keywords"
+        },
+        {
+          "component": "select",
+          "name": "template",
+          "label": "Template",
+          "options": [
+            {
+              "name": "Página modular",
+              "value": ""
+            },
+            {
+              "name": "Blog Post",
+              "value": "blog-post"
+            },
+            {
+              "name": "Categoria Post",
+              "value": "categoria"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blog-post-metadata",
+      "fields": [
+        {
+          "component": "text",
+          "name": "template",
+          "label": "Template",
+          "valueType": "string",
+          "value": "blog-post",
+          "readOnly": true
+        },
+       {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:title",
+          "label": "Title"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:description",
+          "label": "Description"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "keywords",
+          "multi": true,
+          "label": "Keywords"
+        },
+        {
+          "component": "richtext",
+          "name": "resumen",
+          "label": "Resumen",
+          "valueType": "string"
+        },
+        {
+          "component": "reference",
+          "name": "imagen",
+          "label": "Imagen principal",
+          "valueType": "string",
+          "multi": false
+        }
+      ]
+    },
+    {
+      "id": "categoria-metadata",
+      "fields": [
+        {
+          "component": "text",
+          "name": "template",
+          "label": "Template",
+          "valueType": "string",
+          "value": "categoria",
+          "readOnly": true
+        },
+       {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:title",
+          "label": "Title"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "jcr:description",
+          "label": "Description"
+        },
+        {
+          "component": "text",
+          "valueType": "string",
+          "name": "keywords",
+          "multi": true,
+          "label": "Keywords"
+        },
+        {
+          "component": "text",
+          "name": "titulo",
+          "label": "Titulo",
+          "valueType": "string"
+        },
+        {
+          "component": "number",
+          "name": "nav-order",
+          "label": "Orden en navegación",
+          "valueType": "number"
+        },
+        {
+          "component": "boolean",
+          "name": "nav-hide",
+          "label": "Ocultar en navegación",
+          "valueType": "boolean"
         }
       ]
     }
