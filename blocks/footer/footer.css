@@ -39,7 +39,7 @@
 }
 
 #footer-page .content-logos .logo img {
-  height: 36px;
+  height: 24px;
 }
 
 #footer-page .content-logos .claim {
@@ -113,6 +113,18 @@
   gap: 14px;
   min-width: 190px;
   font-weight: 600;
+}
+
+/* The authored columns can wrap the section heading in an outer list item.
+   Reset that source list as well as the link list to avoid its bullet. */
+#footer-page .lst-links .section > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#footer-page .lst-links .section > ul > li {
+  list-style: none;
 }
 
 #footer-page .section-title {
@@ -226,7 +238,7 @@
   }
 
   #footer-page .content-logos .logo img {
-    height: 30px;
+    height: 24px;
   }
 
   #footer-page .company-logo img.only-mobile {
