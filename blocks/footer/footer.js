@@ -1,4 +1,6 @@
 import { moveInstrumentation } from '../../scripts/scripts.js';
+import { getMetadata } from '../../scripts/aem.js';
+import { loadFragment } from '../fragment/fragment.js';
 
 const SOCIAL_NETWORKS = [
   { name: 'Facebook', className: 'facebook', icon: '/icons/footer-facebook.svg' },
@@ -168,27 +170,39 @@ function buildFooterMenu(row) {
   return nav;
 }
 
-export default function decorate(block) {
-  const rows = [...block.querySelectorAll(':scope > .columns')];
-  const paragraphRows = [...block.querySelectorAll(':scope > p')];
-  const footer = document.createElement('footer');
+export default async function decorate(block) {
+  const footerMeta = getMetadata('footer');
+  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  const fragment = await loadFragment(footerPath);
+
+  if (!fragment) {
+    block.replaceChildren();
+    return;
+  }
+
+  const rows = [...fragment.querySelectorAll('.columns')];
+  const paragraphRows = [...fragment.querySelectorAll('.default-content-wrapper > p')];
+  const breadcrumbPara = paragraphRows.find((paragraph) => paragraph.textContent.trim().toLowerCase() === 'breadcrumb')
+    || paragraphRows[0];
+  const copyrightPara = paragraphRows.find((paragraph) => /©|copyright/i.test(paragraph.textContent))
+    || paragraphRows[1];
+  // The site template already provides the outer <footer>; use a div inside it
+  // to avoid creating a nested footer landmark.
+  const footer = document.createElement('div');
   footer.id = 'footer-page';
-  footer.setAttribute('role', 'contentinfo');
 
   const logoColumns = getRowColumns(rows[0]);
-  if (rows[0]) {
-    const logos = document.createElement('div');
-    logos.className = 'content-logos';
-    logos.append(buildLogoLink(logoColumns[0]));
+  const logos = document.createElement('div');
+  logos.className = 'content-logos';
+  logos.append(buildLogoLink(logoColumns[0]));
 
-    const claim = document.createElement('span');
-    claim.className = 'claim';
-    claim.textContent = logoColumns[1]?.textContent.trim() || 'Encendiendo el futuro de las personas';
-    if (logoColumns[1]) moveInstrumentation(logoColumns[1], claim);
-    logos.append(claim);
-    logos.append(buildLogoLink(logoColumns[2], { company: true }));
-    footer.append(logos);
-  }
+  const claim = document.createElement('span');
+  claim.className = 'claim';
+  claim.textContent = logoColumns[1]?.textContent.trim() || 'Encendiendo el futuro de las personas';
+  if (logoColumns[1]) moveInstrumentation(logoColumns[1], claim);
+  logos.append(claim);
+  logos.append(buildLogoLink(logoColumns[2], { company: true }));
+  footer.append(logos);
 
   const breadcrumb = document.createElement('nav');
   breadcrumb.className = 'breadcrumb';
@@ -199,13 +213,14 @@ export default function decorate(block) {
   const breadcrumbList = document.createElement('ul');
   breadcrumbList.className = 'content';
   const breadcrumbItem = document.createElement('li');
-  breadcrumbItem.textContent = paragraphRows[0]?.textContent.trim() || 'Inicio';
-  if (paragraphRows[0]) moveInstrumentation(paragraphRows[0], breadcrumbItem);
+  const breadcrumbValue = breadcrumbPara?.textContent.trim() || 'Inicio';
+  breadcrumbItem.textContent = breadcrumbValue.toLowerCase() === 'breadcrumb' ? 'Inicio' : breadcrumbValue;
+  if (breadcrumbPara) moveInstrumentation(breadcrumbPara, breadcrumbItem);
   breadcrumbList.append(breadcrumbItem);
   breadcrumb.append(breadcrumbText, breadcrumbList);
   footer.append(breadcrumb);
 
-  if (rows[1]) footer.append(buildFooterMenu(rows[1]));
+  footer.append(buildFooterMenu(rows[1]));
 
   const copyright = document.createElement('div');
   copyright.className = 'copyright';
@@ -223,7 +238,7 @@ export default function decorate(block) {
     copyright.append(legalNav);
   }
 
-  const authoredCopyright = paragraphRows[1];
+  const authoredCopyright = copyrightPara;
   if (authoredCopyright) {
     const text = document.createElement('p');
     const copyrightValue = authoredCopyright.textContent.trim();
@@ -237,6 +252,10 @@ export default function decorate(block) {
     copyrightMark.textContent = '©';
     text.append(accessibleLabel, ' ', copyrightMark, ' ', copyrightValue.replace(/^©\s*/, ''));
     moveInstrumentation(authoredCopyright, text);
+    copyright.append(text);
+  } else {
+    const text = document.createElement('p');
+    text.textContent = '© 2025 ON — Blog Mutua Madrileña. Todos los derechos reservados.';
     copyright.append(text);
   }
   footer.append(copyright);
