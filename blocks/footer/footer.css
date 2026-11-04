@@ -115,18 +115,15 @@
   font-weight: 600;
 }
 
-#footer-page .section-toggle {
-  border: 0;
-  padding: 0;
-  background: transparent;
+#footer-page .section-title {
+  display: block;
+  margin: 0;
   color: #222;
-  font: inherit;
   font-weight: 600;
   text-align: left;
-  cursor: default;
 }
 
-#footer-page .section-toggle .arrow {
+#footer-page .section-title::after {
   display: none;
 }
 
@@ -266,14 +263,13 @@
     padding: 20px 46px 20px 24px;
   }
 
-  #footer-page .section-toggle {
+  #footer-page .section-title {
     position: relative;
-    width: 100%;
     min-height: 24px;
     cursor: pointer;
   }
 
-  #footer-page .section-toggle .arrow {
+  #footer-page .section-title::after {
     position: absolute;
     top: 2px;
     right: -24px;
@@ -286,7 +282,7 @@
     transition: transform 200ms ease;
   }
 
-  #footer-page .section.is-open .section-toggle .arrow {
+  #footer-page .section.is-open .section-title::after {
     transform: rotate(225deg);
   }
 

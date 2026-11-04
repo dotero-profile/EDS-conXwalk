@@ -117,31 +117,32 @@ function buildFooterMenu(row) {
     section.className = 'section';
 
     const heading = column.querySelector('strong, h2, h3, h4, :scope > p');
-    const title = document.createElement('button');
-    title.className = 'section-toggle';
-    title.type = 'button';
-    title.setAttribute('aria-expanded', 'false');
-    title.textContent = heading?.textContent.trim() || '';
-    const headingSource = heading?.closest('[data-aue-prop], [data-richtext-prop]') || heading;
-    if (headingSource) moveInstrumentation(headingSource, title);
-
-    const arrow = document.createElement('span');
-    arrow.className = 'arrow';
-    arrow.setAttribute('aria-hidden', 'true');
-    title.append(arrow);
-    section.append(title);
-
     const list = column.querySelector('ul ul') || column.querySelector('ul');
     if (list) {
-      moveInstrumentation(column, section);
       list.classList.add('section-links');
-      section.append(list);
+      list.id = `footer-links-${links.children.length + 1}`;
     }
+
+    // Keep the authored text/list nodes intact so UE instrumentation stays on
+    // the fields it authored. Only move the column's instrumentation to <li>.
+    moveInstrumentation(column, section);
+    if (heading) heading.classList.add('section-title');
+    while (column.firstChild) section.append(column.firstChild);
+
+    const toggle = heading || section;
+    if (list) toggle.setAttribute('aria-controls', list.id);
 
     const mobileView = window.matchMedia('(max-width: 767px)');
     const setExpandedState = () => {
       const collapsed = mobileView.matches;
-      title.setAttribute('aria-expanded', String(!collapsed));
+      toggle.setAttribute('aria-expanded', String(!collapsed));
+      if (collapsed) {
+        toggle.setAttribute('role', 'button');
+        toggle.setAttribute('tabindex', '0');
+      } else {
+        toggle.removeAttribute('role');
+        toggle.removeAttribute('tabindex');
+      }
       section.classList.toggle('is-open', !collapsed);
       if (list) {
         list.inert = collapsed;
@@ -152,15 +153,22 @@ function buildFooterMenu(row) {
     setExpandedState();
     mobileView.addEventListener('change', setExpandedState);
 
-    title.addEventListener('click', () => {
+    const toggleList = () => {
       if (!mobileView.matches) return;
-      const expanded = title.getAttribute('aria-expanded') === 'true';
-      title.setAttribute('aria-expanded', String(!expanded));
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
       section.classList.toggle('is-open', !expanded);
       if (list) {
         list.inert = expanded;
         list.setAttribute('aria-hidden', String(expanded));
         list.style.maxHeight = expanded ? '0px' : `${list.scrollHeight}px`;
+      }
+    };
+    toggle.addEventListener('click', toggleList);
+    toggle.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleList();
       }
     });
 
@@ -198,11 +206,13 @@ export default async function decorate(block) {
   logos.className = 'content-logos';
   logos.append(buildLogoLink(logoColumns[0]));
 
-  const claim = document.createElement('span');
+  const claim = document.createElement('div');
   claim.className = 'claim';
-  claim.textContent = logoColumns[1]?.textContent.trim() || 'Encendiendo el futuro de las personas';
-  const claimSource = logoColumns[1]?.querySelector('[data-aue-prop], [data-richtext-prop]') || logoColumns[1];
-  if (claimSource) moveInstrumentation(claimSource, claim);
+  if (logoColumns[1]) {
+    moveInstrumentation(logoColumns[1], claim);
+    while (logoColumns[1].firstChild) claim.append(logoColumns[1].firstChild);
+  }
+  if (!claim.textContent.trim()) claim.textContent = 'Encendiendo el futuro de las personas';
   logos.append(claim);
   logos.append(buildLogoLink(logoColumns[2], { company: true }));
   footer.append(logos);
@@ -216,9 +226,14 @@ export default async function decorate(block) {
   const breadcrumbList = document.createElement('ul');
   breadcrumbList.className = 'content';
   const breadcrumbItem = document.createElement('li');
-  const breadcrumbValue = breadcrumbPara?.textContent.trim() || 'Inicio';
-  breadcrumbItem.textContent = breadcrumbValue.toLowerCase() === 'breadcrumb' ? 'Inicio' : breadcrumbValue;
-  if (breadcrumbPara) moveInstrumentation(breadcrumbPara, breadcrumbItem);
+  if (breadcrumbPara) {
+    if (breadcrumbPara.textContent.trim().toLowerCase() === 'breadcrumb') breadcrumbPara.textContent = 'Inicio';
+    const breadcrumbSource = breadcrumbPara.closest('[data-aue-prop], [data-richtext-prop]') || breadcrumbPara;
+    moveInstrumentation(breadcrumbSource, breadcrumbItem);
+    breadcrumbItem.append(breadcrumbPara);
+  } else {
+    breadcrumbItem.textContent = 'Inicio';
+  }
   breadcrumbList.append(breadcrumbItem);
   breadcrumb.append(breadcrumbText, breadcrumbList);
   footer.append(breadcrumb);
@@ -232,30 +247,30 @@ export default async function decorate(block) {
     legalNav.className = 'legales';
     legalNav.setAttribute('aria-label', 'Enlaces legales');
     const legalList = document.createElement('ul');
-    rows[2].querySelectorAll('a').forEach((link) => {
+    const legalColumns = getRowColumns(rows[2]);
+    legalColumns.forEach((column) => {
       const item = document.createElement('li');
-      item.append(link);
+      moveInstrumentation(column, item);
+      while (column.firstChild) item.append(column.firstChild);
       legalList.append(item);
     });
+    if (!legalColumns.length) {
+      rows[2].querySelectorAll('a').forEach((link) => {
+        const item = document.createElement('li');
+        item.append(link);
+        legalList.append(item);
+      });
+    }
     legalNav.append(legalList);
     copyright.append(legalNav);
   }
 
   const authoredCopyright = copyrightPara;
   if (authoredCopyright) {
-    const text = document.createElement('p');
-    const copyrightValue = authoredCopyright.textContent.trim();
-    const accessibleLabel = document.createElement('span');
-    accessibleLabel.className = 'sr-only';
-    accessibleLabel.lang = 'en';
-    accessibleLabel.textContent = 'Copyright';
-    const copyrightMark = document.createElement('abbr');
-    copyrightMark.title = 'Copyright';
-    copyrightMark.lang = 'en';
-    copyrightMark.textContent = '©';
-    text.append(accessibleLabel, ' ', copyrightMark, ' ', copyrightValue.replace(/^©\s*/, ''));
-    moveInstrumentation(authoredCopyright, text);
-    copyright.append(text);
+    const copyrightSource = authoredCopyright.closest('[data-aue-prop], [data-richtext-prop]') || authoredCopyright;
+    moveInstrumentation(copyrightSource, copyright);
+    authoredCopyright.classList.add('copyright-text');
+    copyright.append(authoredCopyright);
   } else {
     const text = document.createElement('p');
     text.textContent = '© 2025 ON — Blog Mutua Madrileña. Todos los derechos reservados.';
