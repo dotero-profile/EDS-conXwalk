@@ -122,6 +122,8 @@ function buildFooterMenu(row) {
     title.type = 'button';
     title.setAttribute('aria-expanded', 'false');
     title.textContent = heading?.textContent.trim() || '';
+    const headingSource = heading?.closest('[data-aue-prop], [data-richtext-prop]') || heading;
+    if (headingSource) moveInstrumentation(headingSource, title);
 
     const arrow = document.createElement('span');
     arrow.className = 'arrow';
@@ -199,7 +201,8 @@ export default async function decorate(block) {
   const claim = document.createElement('span');
   claim.className = 'claim';
   claim.textContent = logoColumns[1]?.textContent.trim() || 'Encendiendo el futuro de las personas';
-  if (logoColumns[1]) moveInstrumentation(logoColumns[1], claim);
+  const claimSource = logoColumns[1]?.querySelector('[data-aue-prop], [data-richtext-prop]') || logoColumns[1];
+  if (claimSource) moveInstrumentation(claimSource, claim);
   logos.append(claim);
   logos.append(buildLogoLink(logoColumns[2], { company: true }));
   footer.append(logos);
